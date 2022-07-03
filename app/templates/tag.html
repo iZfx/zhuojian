@@ -1,0 +1,23 @@
+<div class="books-header">
+  <h3 class="h3-header">图书标签</h3>
+  <hr>
+</div>
+<ul class="list-col list-col5 list-express">
+  {% for tags in tags %}
+    {% if tags.books|length %}
+    <li class="list-group-item-modify"><a href="{{ url_for('category', name=tags.name) }}" class="tag">{{ tags.name }} {{ tags.books|length }}</a></li>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+<div class="books-header">
+  <h3 class="h3-header">笔记标签</h3>
+  <hr>
+</div>
+<ul class="list-col list-col5 list-express">
+  {% for tags in tags %}
+    {% if tags.notes|length %}
+    <li class="list-group-item-modify"><a href="{{ url_for('category', name=tags.name, category='note') }}" class="tag">{{ tags.name }} {{ tags.notes|length }}</a></li>
+    {% endif %}
+  {% endfor %}
+</ul>

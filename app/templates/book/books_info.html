@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block styles_link_base %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/books_info.css') }}">
+{% endblock %}
+
+{% block app_content %}
+  <br>
+  <div class="row">
+    <div class="col-xs-8 col-sm-12">
+      <h2 class="h2modify">{{ book.book_name }}</h2>
+    </div>
+    <div class="col-md-4">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-xs-8 col-sm-6 book_pic">
+            <a class="nbg" href="{{ book.book_img }}" title="点击看大图">
+              <img src="{{ book.book_img }}" title="{{ book.book_name }}" alt="{{ book.book_name }}" rel="v:photo" style="width: 135px;max-height: 200px;">
+            </a>
+          </div>
+          <div class="col-xs-4 col-sm-6 book_info">
+            <span class="pl">作者:</span> {{ book.author }}<br>
+            <span class="pl">译者:</span> {{ book.translator }}<br>
+            <span class="pl">出版社:</span> {{ book.publisher }}<br>
+            <span class="pl">出版年:</span> {{ book.publish_time }}<br>
+            <span class="pl">页数:</span> {{ book.page }}<br>
+            <span class="pl">ISBN:</span> {{ book.isbn }}<br>
+            {% if book.tags %}
+              <span class="pl">标签:</span> |
+              {% for tags in book.tags %}
+                <a href="{{ url_for('category', name=tags.name) }}" class="tag">{{ tags.name }}</a> |
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+        {% if current_user.username != 'admin' %}
+          <div class="col-md-12">
+            <br>
+            <div class="col-xs-8 col-sm-12">
+              <ul class="ul_subject_menu bicelink color_gray pt6 clearfix list-inline">
+                <li>
+                  <img src="https://img3.doubanio.com/f/shire/5bbf02b7b5ec12b23e214a580b6f9e481108488c/pics/add-review.gif">&nbsp;
+                  <a class="" href="{{ url_for('write_comment', isbn=book.isbn) }}" rel="nofollow">写书评</a>
+                </li>
+                <li>
+                  <img src="https://img3.doubanio.com/f/shire/5bbf02b7b5ec12b23e214a580b6f9e481108488c/pics/add-review.gif">&nbsp;
+                  <a class="" href="{{ url_for('write_note', isbn=book.isbn) }}" rel="nofollow">写笔记(记录名言美句)</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-md-8">
+      <h2><span class="">内容简介</span>&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·</h2>
+      <div class="col-sm-12">
+        <p class="intro">{{ book.book_intro }}</p>
+      </div>
+      <h2><span class="">作者简介</span>&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·</h2>
+      <div class="col-sm-12">
+        <p class="intro">{{ book.author_intro }}</p>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <h2><span class="">{{ book.book_name }} 的书评</span>&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·</h2>
+      {% for comment in pagination_comment.items %}
+        <div class="media">
+          <div class="media-left">
+            <a href="{{ url_for('user_page', username=comment.user.username) }}">
+              <img class="media-object img-rounded" src="{{ comment.user.avatar_img}}" alt="avatar" width="32px" height="32px">
+            </a>
+          </div>
+          <div class="media-body">
+            <h4 class="media-heading"><a href="{{ url_for('user_page', username=comment.user.username) }}">
+              {{ comment.user.username }}</a> {% if comment.replied %}<span class="badge badge-light">回复</span>{% else %} | {{ comment.title }}{% endif %}
+            </h4>
+            {% if comment.replied %}
+              <p class="alert-dark reply-body">{{ comment.replied.user.username }}{% if comment.replied.title != 'None' %} | {{ comment.replied.title }}{% endif %}:
+                <br>{{ comment.replied.content }}
+              </p>
+            {%- endif -%}
+            <p>{{ comment.content }}</p>
+            <small class="text-muted">
+              {{ comment.timestamp }}
+              {% if current_user.username != 'admin' %}
+                <a class="reply" href="{{ url_for('reply', comment_id=comment.id) }}">回复</a>
+                <input type='hidden' name='comment_id' value='{{ comment.id }}'>
+              {% endif %}
+            </small>
+            <hr>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="col-md-6">
+      <h2><span class="">读书笔记</span>&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·</h2>
+      {% for note in pagination_note.items %}
+        <div class="media">
+          <div class="media-left">
+            <a href="{{ url_for('user_page', username=note.user.username) }}">
+              <img class="media-object img-rounded" src="{{ note.user.avatar_img}}" alt="avatar" width="32px" height="32px">
+            </a>
+          </div>
+          <div class="media-body">
+            <h4 class="media-heading">{{ note.title }} | 第{{ note.page }}页</h4>
+            <small class="text-muted">
+              <a href="{{ url_for('user_page', username=note.user.username) }}">
+                {{ note.user.username }}</a> | {{ note.timestamp }}
+                {% if note.tags %} | 标签: /
+                  {% for tags in note.tags %}
+                    <a href="{{ url_for('category', name=tags.name, category='note') }}">{{ tags.name }}</a> /
+                  {% endfor %}
+                {% endif %}
+            </small>
+            <p>{{ note.content }}</p>
+            <hr>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% if pagination_comment.items or pagination_note.items %}
+    {% if pagination_comment.pages >= pagination_note.pages %}
+      <center>
+        {{ render_pagination(pagination_comment) }}
+      </center>
+    {% else %}
+      <center>
+        {{ render_pagination(pagination_note) }}
+      </center>
+    {% endif %}
+  {% else %}
+    <div class="tip"><h5>No contents.</h5></div>
+  {% endif %}
+  {% if request.args.get('reply') %}
+    <div class="alert alert-dark">
+      回复 <strong>{{ request.args.get('author') }}</strong>:
+      <a class="float-right" href="{{ url_for('books_info', isbn=book.isbn) }}">取消</a>
+    </div>
+    <div id="reply-form">
+      {% import 'bootstrap/wtf.html' as wtf %}
+      {{ wtf.quick_form(form) }}
+    </div>
+  {% endif %}
+{% endblock %}

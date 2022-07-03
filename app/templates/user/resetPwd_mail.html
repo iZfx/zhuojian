@@ -1,0 +1,12 @@
+<p>您好！{{ user.username }}。</p>
+<p>
+  <a href="{{ url_for('resetPwd', token=token, _external=True) }}">
+    请点此处
+  </a>
+重置密码。
+</p>
+<p>或者，您可以粘贴下面这个链接到你的浏览器中打开：</p>
+<p>{{ url_for('resetPwd', token=token, _external=True) }}</p>
+<p>如果您没有请求重置密码请忽视这条消息。</p>
+<p>谢谢！</p>
+<p>卓见</p>

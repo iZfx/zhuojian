@@ -1,0 +1,20 @@
+footer {
+    display: block;
+    margin: 30px 0;
+    padding: 20px 0;
+    border-top: 1px solid #e5e5e5;
+}
+footer .float-left {
+    float: left!important;
+}
+footer p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+footer small {
+    font-size: 80%;
+    font-weight: 400;
+}
+footer .float-right {
+    float: right!important;
+}

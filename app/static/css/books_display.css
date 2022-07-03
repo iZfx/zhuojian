@@ -1,0 +1,163 @@
+.carousel{
+    overflow: hidden;
+    position: relative;
+    width: 675px;
+}
+
+ul{
+    list-style: none;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+.list-express li {
+    overflow: hidden;
+    margin: 0 25px 15px 0;
+}
+
+.list-col5 {
+    margin: 0 -25px 0 0;
+}
+
+.list-col li{
+    float:none;
+    display:inline-block;
+    *display:inline;
+    zoom:1;
+    vertical-align:top
+}
+.list-col5 li {
+    width: 115px;
+    margin: 0 25px 20px 0;
+}
+
+.list-express .cover {
+    width: 115px;
+    height: 172px;
+    margin-bottom: 7px;
+    overflow: hidden;
+}
+
+.list-express .info {
+    padding: 0 2px;
+}
+.list-col5 .info {
+    margin: 0;
+    line-height: 1;
+    display: block;
+    color: #666;
+}
+
+.list-express .title {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+.list-col5 .title {
+    font-size: 13px;
+    margin-bottom: 5px;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    _width: 106px;
+}
+.carousel .title, .carousel .author, .carousel .publisher {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.list-col5 .title {
+    display: block;
+    font-size: 14px;
+}
+
+.title a{
+    color: #337ab7;
+    text-decoration: none;
+}
+
+a:hover {
+    background-color: #3377aa;
+    color: white;
+    text-decoration: none;
+    background: #37a;
+}
+a:link, a:hover, a:visited, a:focus {
+    color: #3377aa;
+}
+a {
+    cursor: pointer;
+}
+
+.list-express .author {
+    color: #333;
+    width: 102px;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+.carousel .title, .carousel .author, .carousel .publisher {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.more-meta {
+    display: none;
+}
+
+.books-header{
+    padding-left: 40px;
+    padding-right: 40px;
+    color: #111;
+    height: 45px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    margin: 0 0 12px 0;
+    line-height: 150%;
+}
+.books-header .h3-header{
+    font-weight: bold;
+}
+
+.tag, .tag:link, .tag:visited {
+    width: auto;
+    word-break: keep-all;
+    white-space: nowrap;
+    background-color: #f5f5f5;
+    color: #37A;
+    font-size: 13px;
+    padding: 2px 11px 0;
+    display: inline-block;
+    margin: 0 3px 5px 0;
+    line-height: 20px;
+}
+.list-group-item-modify {
+    position: relative;
+    display: block;
+    padding: 10px 30px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd0;
+}
+
+
+.col-md-8 .padding{
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.label-modify{
+    float: right;
+    display: inline;
+    padding: .1em .2em;
+    font-size: 50%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}

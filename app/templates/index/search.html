@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block styles_link_base %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/search.css') }}">
+{% endblock %}
+
+{% block app_content %}
+  <div class="page-header">
+    <h1>搜索: {{ q }}</h1>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <div class="nav nav-pills flex-column" role="tablist" aria-orientation="vertical">
+        <a class="nav-item nav-link {% if category == 'book' %}active{% endif %}"
+           href="{{ url_for('search', q=q, category='book') }}">书籍</a>
+        <a class="nav-item nav-link {% if category == 'user' %}active{% endif %}"
+           href="{{ url_for('search', q=q, category='user') }}">用户</a>
+        <a class="nav-item nav-link {% if category == 'tag' %}active{% endif %}"
+           href="{{ url_for('search', q=q, category='tag') }}">标签</a>
+        <a class="nav-item nav-link {% if category == 'comment' %}active{% endif %}"
+           href="{{ url_for('search', q=q, category='comment') }}">书评</a>
+        <a class="nav-item nav-link {% if category == 'note' %}active{% endif %}"
+           href="{{ url_for('search', q=q, category='note') }}">笔记</a>
+      </div>
+    </div>
+    <div class="col-md-9">
+      {% if results %}
+        <h5><font style="vertical-align: inherit;">
+          当前页 {{ results|length }} 个结果 / 总共 {{ pagination.total }} 个结果
+        </font></h5>
+        <hr>
+        {% for item in results %}
+          {% if category == 'book' %}
+            <div class="media padding">
+            <div class="media-left">
+              <a href="{{ url_for('books_info', isbn=item.isbn) }}" title="{{ item.book_name }}">
+                <img class="media-object" src="{{ item.book_img }}" alt="avatar" width="64px">
+              </a>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading">
+                <a href="{{ url_for('books_info', isbn=item.isbn) }}" title="{{ item.book_name }}">
+                  {{ item.book_name.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }}
+                </a>
+              </h4>
+              <small class="text-muted">
+                {{ item.author.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }} | {{ item.publisher }} | {{ item.publish_time }} | {{ item.page }}页 | 标签: /
+                {% for tags in item.tags %}
+                  <a href="{{ url_for('category', name=tags.name) }}" class="tag">
+                    {{ tags.name.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }}</a> /
+                {% endfor %}
+              </small>
+              <p>{{ item.book_intro }}</p>
+            </div>
+            <hr>
+            </div>
+          {% elif category == 'user' %}
+            <div class="user-card text-center">
+                  <a href="{{ url_for('user_page', username=item.username) }}">
+                      <img class="rounded avatar-m" src="{{ item.avatar_img }}" alt="默认头像">
+                  </a>
+                  <h6>
+                      <a href="{{ url_for('user_page', username=item.username) }}">{{ item.username.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }}</a>
+                  </h6>
+                {% if current_user.is_authenticated %}
+                  {% if current_user == item %}
+                    <a href="{{ url_for('edit_profile') }}" class="btn btn-button btn-default" role="button">编辑资料</a>
+                  {% else %}
+                    {% if current_user.is_following(item) %}
+                      <a href="{{ url_for('unfollow', username=item.username) }}" class="btn btn-button btn-dark" role="button">取消关注</a>
+                    {% else %}
+                      <a href="{{ url_for('follow', username=item.username) }}" class="btn btn-button btn-primary" role="button">设置关注</a>
+                    {% endif %}
+                  {% endif %}
+                {% else %}
+                  <a href="{{ url_for('follow', username=item.username) }}" class="btn btn-button btn-primary" role="button">设置关注</a>
+                {% endif %}
+              </div>
+          {% elif category == 'tag' %}
+            <a class="badge badge-light" href="{{ url_for('category', name=item.name) }}">
+              {{ item.name.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }}
+            </a>
+          {% elif category == 'comment' %}
+            <div class="media">
+              <div class="media-left">
+                <a href="{{ url_for('user_page', username=item.user.username) }}">
+                  <img class="media-object img-rounded" src="{{ item.user.avatar_img}}" alt="avatar" width="48px" height="48px">
+                </a>
+              </div>
+              <div class="media-body">
+                <h4 class="media-heading">{{ item.title.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }}</h4>
+                <small class="text-muted">
+                  <a href="{{ url_for('user_page', username=item.user.username) }}">
+                    {{ item.user.username }}</a> | {{ item.timestamp }}
+                </small>
+                <p>{{ item.content.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }}</p>
+              </div>
+              <div class="media-right">
+                <a href="{{ url_for('books_info', isbn=item.book.isbn) }}">
+                  <img class="media-object" src="{{ item.book.book_img}}" alt="avatar"  width="72px">
+                </a>
+              </div>
+              <hr>
+            </div>
+          {% else %}
+            <div class="media">
+              <div class="media-left">
+                <a href="{{ url_for('user_page', username=item.user.username) }}">
+                  <img class="media-object img-rounded" src="{{ item.user.avatar_img}}" alt="avatar" width="48px" height="48px">
+                </a>
+              </div>
+              <div class="media-body">
+                <h4 class="media-heading">{{ item.title.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }} | 第{{ item.page }}页</h4>
+                <small class="text-muted">
+                  <a href="{{ url_for('user_page', username=item.user.username) }}">
+                    {{ item.user.username }}</a> | {{ item.timestamp }}
+                    {% if item.tags %} | 标签: /
+                      {% for tags in item.tags %}
+                        <a href="{{ url_for('category', name=tags.name, category='note') }}">{{ tags.name.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }}</a> /
+                      {% endfor %}
+                    {% endif %}
+                </small>
+                <p>{{ item.content.replace(q, '<font color="#ff3366">'+q+'</font>')|safe }}</p>
+              </div>
+              <div class="media-right">
+                <a href="{{ url_for('books_info', isbn=item.book.isbn) }}">
+                  <img class="media-object" src="{{ item.book.book_img}}" alt="avatar"  width="72px">
+                </a>
+              </div>
+              <hr>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <h5 class="tip">没有结果</h5>
+      {% endif %}
+    </div>
+    {% if results %}
+    <center>
+      {{ render_pagination(pagination, get_search_part, align='right') }}
+    </center>
+    {% endif %}
+  </div>
+{% endblock %}

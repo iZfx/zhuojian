@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block styles_link_base %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/books_display.css') }}">
+{% endblock %}
+
+{% block app_content %}
+  <div class="row">
+    <div class="row col-md-8 carousel">
+      <div class="books-header">
+        <h3 class="h3-header">
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {% if category == 'note' %} 笔记 {% else %} 图书 {% endif %}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              {% if category == 'note' %}
+                <li><a href="{{ url_for('category', name=title, category='book') }}">图书</a></li>
+              {% else %}
+                <li><a href="{{ url_for('category', name=title, category='note') }}">笔记</a></li>
+              {% endif %}
+            </ul>
+          </div>标签：{{ title }}
+          {% if category == 'note' %}
+            <span class="label-modify label-default">按发表时间排序</span>
+          {% else %}
+            <span class="label-modify label-default">按出版时间排序</span>
+          {% endif %}
+        </h3>
+        <hr>
+      </div>
+
+      {% if category == 'book' %}
+        {% for books in pagination.items %}
+          <div class="media padding">
+            <div class="media-left">
+              <a href="{{ url_for('books_info', isbn=books.isbn) }}" title="{{ books.book_name }}">
+                <img class="media-object" src="{{ books.book_img }}" alt="avatar" width="64px">
+              </a>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading"><a href="{{ url_for('books_info', isbn=books.isbn) }}" title="{{ books.book_name }}">{{ books.book_name }}</a></h4>
+              <small class="text-muted">{{ books.author }} | {{ books.publisher }} | {{ books.publish_time }}</small>
+              <p>{{ books.book_intro }}</p>
+            </div>
+            <hr>
+          </div>
+        {% endfor %}
+      {% else %}
+        {% for notes in pagination.items %}
+          <div class="media padding">
+            <div class="media-left">
+              <a href="{{ url_for('user_page', username=notes.user.username) }}">
+                <img class="media-object img-rounded" src="{{ notes.user.avatar_img}}" alt="avatar" width="48px" height="48px">
+              </a>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading">{{ notes.title }} | 第{{ notes.page }}页</h4>
+              <small class="text-muted">
+                <a href="{{ url_for('user_page', username=notes.user.username) }}">
+                  {{ notes.user.username }}</a> | {{ notes.timestamp }}
+                  {% if notes.tags %} | 标签: /
+                    {% for tags in notes.tags %}
+                      <a href="{{ url_for('category', name=tags.name, category='note') }}">{{ tags.name }}</a> /
+                    {% endfor %}
+                  {% endif %}
+              </small>
+              <p>{{ notes.content }}</p>
+            </div>
+            <div class="media-right">
+              <a href="{{ url_for('books_info', isbn=notes.book.isbn) }}">
+                <img class="media-object" src="{{ notes.book.book_img}}" alt="avatar"  width="72px">
+              </a>
+            </div>
+            <hr>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <center>
+        {{ render_pagination(pagination) }}
+      </center>
+    </div>
+    <div class="row col-md-4 carousel">
+      {% include 'tag.html' %}
+    </div>
+  </div>
+{% endblock %}

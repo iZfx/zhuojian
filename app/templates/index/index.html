@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block styles_link_base %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/books_display.css') }}">
+{% endblock %}
+
+{% block app_content %}
+  <div class="row">
+    {% include 'book/books_display.html' %}
+  </div>
+{% endblock %}

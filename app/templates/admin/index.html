@@ -1,0 +1,26 @@
+<!--为了保持一致，继承admin/master.html模板-->
+{% extends 'admin/master.html' %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/footer.css') }}">
+{% endblock %}
+
+{% block body %}
+  <div class="jumbotron">
+    <h1>欢迎来到卓见管理系统！</h1>
+    <p>只有管理员用户才有权限管理本站数据</p>
+    <p><a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">登录卓见</a></p>
+  </div>
+  <footer>
+    <p class="float-left">
+      <small>&copy; 2020
+        <a href="#" title="Written by Xiao zhongfei">肖忠飞</a> -
+        <a href="#" title="Zhonghuan information College Tianjin University of Technology">天津理工大学中环信息学院</a> -
+        <a href="{{ url_for('index') }}" title="A zhuojianFlask project">卓见</a>
+      </small>
+    </p>
+    <p class="float-right">
+      <small>记录并分享每一个美好的时刻.</small>
+    </p>
+  </footer>
+{% endblock %}

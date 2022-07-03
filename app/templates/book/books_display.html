@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="row col-md-8 carousel">
+    <div class="books-header">
+      <h3 class="h3-header">图书速递</h3>
+      <hr>
+    </div>
+    <ul class="list-col list-col5 list-express">
+      {% for books in pagination.items %}
+      <li>
+        <div class="cover">
+          <a href="{{ url_for('books_info', isbn=books.isbn) }}" title="{{ books.book_name }}">
+            <img src="{{ books.book_img }}" width="115px" height="172px" alt="{{ books.book_name }}">
+          </a>
+        </div>
+        <div class="info">
+          <div class="title"><a class="" href="{{ url_for('books_info', isbn=books.isbn) }}" title="{{ books.book_name }}">{{ books.book_name }}</a></div>
+          <div class="author">{{ books.author }}</div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="row col-md-4 carousel">
+    {% include 'tag.html' %}
+  </div>
+</div>

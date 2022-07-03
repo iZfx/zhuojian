@@ -1,0 +1,18 @@
+.media{
+    background-color: #f8f8f8;
+}
+.media-body .media-sub1 {
+    padding: 10px 40px 0 0;
+    margin-bottom: 5px;
+    color: #37a;
+    font-size: 14px;
+    line-height: 1.4;
+}
+.media-body .media-sub2 {
+    color: #999;
+    font-size: 12px;
+    padding-bottom: 8px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

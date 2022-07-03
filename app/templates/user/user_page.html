@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block styles_link_base %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/user_page.css') }}">
+{% endblock %}
+
+{% block app_content %}
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1 background-color">
+      <div class=" col-md-1">
+        {% if current_user == user %}
+        <a href="{{ url_for('user_page', username=current_user.username) }}">
+          <img src="{{ current_user.avatar_img }}" alt="默认头像" width="72px" height="72px">
+        </a>
+        {% else %}
+        <a href="{{ url_for('user_page', username=user.username) }}">
+          <img src="{{ user.avatar_img }}" alt="默认头像" width="72px" height="72px">
+        </a>
+        {% endif %}
+      </div>
+      <div class=" col-md-9">
+        <h1> {{ user.username }} 的主页</h1>
+      </div>
+      <div>
+        <p>
+          {% if current_user.is_authenticated %}
+            {% if current_user == user %}
+              <a href="#" class="btn btn-primary" role="button">关注 {{ num_followed }}</a>
+              <a href="#" class="btn btn-primary" role="button">粉丝 {{ num_followers }}</a>
+            {% endif %}
+            <br>
+            {% if current_user == user %}
+              <a href="{{ url_for('edit_profile') }}" class="btn btn-button btn-default" role="button">编辑资料</a>
+            {% else %}
+              {% if current_user.is_following(user) %}
+                <a href="{{ url_for('unfollow', username=user.username) }}" class="btn btn-button btn-dark" role="button">取消关注</a>
+              {% else %}
+                <a href="{{ url_for('follow', username=user.username) }}" class="btn btn-button btn-primary" role="button">设置关注</a>
+              {% endif %}
+            {% endif %}
+          {% else %}
+            <a href="{{ url_for('follow', username=user.username) }}" class="btn btn-button btn-primary" role="button">设置关注</a>
+          {% endif %}
+        </p>
+      </div>
+      <hr>
+    </div>
+    <div class="col-md-10 col-md-offset-1">
+      <div class="row">
+        <div class="col-md-6">
+          <h2><span class="">Ta的书评</span>&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·</h2>
+          {% for comment in pagination_comment.items %}
+            {% if not comment.replied %}
+              <div class="media">
+                <div class="media-left">
+                  <a href="{{ url_for('books_info', isbn=comment.book.isbn) }}">
+                    <img class="media-object" src="{{ comment.book.book_img}}" alt="avatar"  width="64px">
+                  </a>
+                </div>
+                <div class="media-body">
+                  <h4 class="media-heading">{{ comment.title }}</h4>
+                  <small class="text-muted">
+                    <a href="{{ url_for('user_page', username=comment.user.username) }}">{{ comment.user.username }}</a> 评论:
+                    <a href="{{ url_for('books_info', isbn=comment.book.isbn) }}">{{ comment.book.book_name }}</a>
+                    <p>{{ comment.timestamp }}</p>
+                  </small>
+                  <p>{{ comment.content }}</p>
+                </div>
+                <hr>
+              </div>
+            {% else %}
+              <div class="media">
+                <div class="media-left">
+                  <a href="{{ url_for('books_info', isbn=comment.book.isbn) }}">
+                    <img class="media-object" src="{{ comment.book.book_img}}" alt="avatar"  width="64px">
+                  </a>
+                </div>
+                <div class="media-body">
+                  <h4 class="media-heading"><a href="{{ url_for('books_info', isbn=comment.book.isbn) }}">{{ comment.book.book_name }}</a></h4>
+                  <small class="text-muted">
+                    <a href="{{ url_for('user_page', username=comment.user.username) }}">{{ comment.user.username }}</a> 回复:
+                    <a href="{{ url_for('user_page', username=comment.replied.user.username) }}">{{ comment.replied.user.username }}</a>{% if comment.replied.title != 'None' %} | {{ comment.replied.title }}{% endif %}
+                    <p>{{ comment.timestamp }}</p>
+                  </small>
+                  <p>{{ comment.content }}</p>
+                </div>
+                <hr>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="col-md-6">
+          <h2><span class="">Ta的笔记</span>&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·&nbsp;·</h2>
+          {% for note in pagination_note.items %}
+            <div class="media">
+            <div class="media-left">
+              <a href="{{ url_for('books_info', isbn=note.book.isbn) }}">
+                <img class="media-object" src="{{ note.book.book_img}}" alt="avatar"  width="64px">
+              </a>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading">{{ note.title }} | 第{{ note.page }}页</h4>
+              <small class="text-muted">
+                <a href="{{ url_for('user_page', username=note.user.username) }}">{{ note.user.username }}</a> 对
+                <a href="{{ url_for('books_info', isbn=note.book.isbn) }}">{{ note.book.book_name }}</a> 的笔记
+                <p>{{ note.timestamp }}
+                  {% if note.tags %} | 标签: /
+                    {% for tags in note.tags %}
+                      <a href="{{ url_for('category', name=tags.name, category='note') }}">{{ tags.name }}</a> /
+                    {% endfor %}
+                  {% endif %}
+                </p>
+              </small>
+              <p>{{ note.content }}</p>
+            </div>
+            <hr>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% if pagination_comment.pages >= pagination_note.pages %}
+        <center>
+          {{ render_pagination(pagination_comment) }}
+        </center>
+      {% else %}
+        <center>
+          {{ render_pagination(pagination_note) }}
+        </center>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

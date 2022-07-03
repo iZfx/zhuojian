@@ -1,0 +1,62 @@
+{% extends 'bootstrap/base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}
+  {% if title %}
+    {{ title }} - 卓见
+  {% else %}
+    卓见
+  {% endif %}
+{% endblock %}
+
+# metass块是从被扩展的bootstrap/base.html中的metas块中额外添加而来的
+{% block metass %}
+  <meta name="referrer" content="no-referrer">
+{% endblock %}
+
+# styles_link块是从被扩展的bootstrap/base.html中的styles块中额外添加而来的
+{% block styles_link %}
+  {% block styles_link_base %}
+  {% endblock %}
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/navbar.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/footer.css') }}">
+{% endblock %}
+
+{% block navbar %}
+  {% include 'index/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+<!--  注册/登录提示消息-->
+    <div class="row">
+      <div>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} text-center">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+    {% block app_content %}
+      <h1>Hello, Bootstrap</h1>
+    {% endblock %}
+    <footer>
+      <p class="float-left">
+        <small>&copy; 2020
+          <a href="#" title="Written by Xiao zhongfei">肖忠飞</a> -
+          <a href="#" title="Zhonghuan information College Tianjin University of Technology">天津理工大学中环信息学院</a> -
+          <a href="{{ url_for('index') }}" title="A zhuojianFlask project">卓见</a>
+        </small>
+      </p>
+      <p class="float-right">
+        <small>记录并分享每一个美好的时刻.</small>
+      </p>
+    </footer>
+  </div>
+{% endblock %}

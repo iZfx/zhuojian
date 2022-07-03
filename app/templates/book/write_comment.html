@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block styles_link_base %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/write.css') }}">
+{% endblock %}
+
+{% block app_content %}
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <br>
+      <div class="media">
+        <div class="media-left">
+          <a href="{{ url_for('books_info', isbn=book.isbn) }}">
+            <img class="media-object" src="{{ book.book_img }}" alt="{{ book.book_name }}" width="42px" height="62px">
+          </a>
+        </div>
+        <div class="media-body">
+          <div>
+            <div class="media-sub1"><a href="{{ url_for('books_info', isbn=book.isbn) }}">{{ book.book_name }}</a></div>
+            <div class="media-sub2"><small class="text-muted">{{ book.author }} | {{ book.publisher }} | {{ book.publish_time }}</small></div>
+          </div>
+        </div>
+      </div>
+      {% import 'bootstrap/wtf.html' as wtf %}
+      {{ wtf.quick_form(form) }}
+    </div>
+  </div>
+{% endblock %}
